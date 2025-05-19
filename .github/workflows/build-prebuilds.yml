@@ -1,0 +1,32 @@
+name: Build Prebuilds
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Prebuild
+        run: |
+          npm install --save-dev prebuildify
+          npm run prebuild
+
+      - name: Upload Prebuilds
+        uses: actions/upload-artifact@v3
+        with:
+          name: prebuilds-win
+          path: prebuilds/
